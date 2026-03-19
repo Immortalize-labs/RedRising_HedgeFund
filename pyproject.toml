@@ -10,3 +10,6 @@ ignore = [
     "E402",   # Module import not at top — required pattern for sys.path tests
     "F841",   # Local variable assigned but never used (pre-existing in client.py)
 ]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

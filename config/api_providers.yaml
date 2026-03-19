@@ -1,0 +1,175 @@
+# API Provider Configuration — M5 Max LLM Stack
+# Declarative API escalation config. Hot-reloadable: APIEscalation.reload_providers().
+#
+# SECURITY: API keys MUST come from environment variables only.
+#           Never inline keys here. This file is checked into git.
+#
+# Budget: $100/mo hard cap. Alerts at 80% ($80) and 100% ($100).
+# Usage log: data/api_usage.jsonl — per-request cost tracking.
+#
+# Provider cost data (2026-03-19, per 1M tokens):
+#   GLM-5:        $0.80 in / $2.56 out  — cheapest for bulk reasoning
+#   MiniMax M2.5: $0.30 in / $1.20 out  — cheapest overall, use for coding
+#   Opus 4.6:     $15.00 in / $75.00 out — frontier, use sparingly
+#   Sonnet 4.6:   $3.00 in / $15.00 out  — balanced, coding fallback
+#   GPT-5.4:      $10.00 in / $30.00 out — math-specialized
+
+# ---------------------------------------------------------------------------
+# Provider Definitions
+# ---------------------------------------------------------------------------
+
+providers:
+  glm5:
+    name: "GLM-5"
+    base_url: "https://open.bigmodel.cn/api/v4"
+    model: "glm-5"
+    api_key_env: "ZHIPU_API_KEY"          # export ZHIPU_API_KEY=...
+    cost_per_m_input_usd: 0.80
+    cost_per_m_output_usd: 2.56
+    timeout_s: 30
+    max_retries: 2
+    task_types:
+      - "reasoning"
+      - "general"
+    enabled: true
+    notes: "Primary API provider — cheapest for reasoning and general tasks"
+
+  minimax:
+    name: "MiniMax M2.5"
+    base_url: "https://api.minimax.chat/v1"
+    model: "minimax-m2.5"
+    api_key_env: "MINIMAX_API_KEY"         # export MINIMAX_API_KEY=...
+    cost_per_m_input_usd: 0.30
+    cost_per_m_output_usd: 1.20
+    timeout_s: 30
+    max_retries: 2
+    task_types:
+      - "coding"
+    enabled: true
+    notes: "Cheapest overall — primary for code generation tasks"
+
+  anthropic:
+    name: "Claude Opus 4.6"
+    base_url: null                          # Uses anthropic SDK (no base_url needed)
+    model: "claude-opus-4-6"
+    api_key_env: "ANTHROPIC_API_KEY"        # export ANTHROPIC_API_KEY=...
+    cost_per_m_input_usd: 15.00
+    cost_per_m_output_usd: 75.00
+    timeout_s: 60
+    max_retries: 1
+    task_types:
+      - "reasoning"
+      - "coding"
+    enabled: true
+    notes: "Frontier fallback — use only when GLM-5/MiniMax fail or for critical decisions"
+
+  anthropic_sonnet:
+    name: "Claude Sonnet 4.6"
+    base_url: null                          # Uses anthropic SDK
+    model: "claude-sonnet-4-6"
+    api_key_env: "ANTHROPIC_API_KEY"        # Same key as Opus
+    cost_per_m_input_usd: 3.00
+    cost_per_m_output_usd: 15.00
+    timeout_s: 30
+    max_retries: 2
+    task_types:
+      - "coding"
+    enabled: true
+    notes: "Balanced coding fallback — cheaper than Opus, higher quality than MiniMax"
+
+  openai:
+    name: "GPT-5.4"
+    base_url: null                          # Uses openai SDK
+    model: "gpt-5.4"
+    api_key_env: "OPENAI_API_KEY"           # export OPENAI_API_KEY=...
+    cost_per_m_input_usd: 10.00
+    cost_per_m_output_usd: 30.00
+    timeout_s: 60
+    max_retries: 1
+    task_types:
+      - "math"
+    enabled: true
+    notes: "Math-specialized — use for quantitative derivations, statistical calculations"
+
+# ---------------------------------------------------------------------------
+# Routing Rules
+# ---------------------------------------------------------------------------
+# Defines primary + fallback provider per task type.
+# APIEscalation.call(prompt, task_type) uses this to pick the right provider.
+#
+# Task types:
+#   reasoning  — complex multi-step inference, strategy analysis
+#   coding     — code generation, debugging, implementation
+#   math       — quantitative calculations, statistical analysis
+#   general    — everything else (summaries, queries, ops tasks)
+# ---------------------------------------------------------------------------
+
+routing_rules:
+  reasoning:
+    primary: "glm5"
+    fallback: "anthropic"
+    notes: "GLM-5 for bulk reasoning. Escalate to Opus only on failure."
+
+  coding:
+    primary: "minimax"
+    fallback: "anthropic_sonnet"
+    notes: "MiniMax cheapest for coding. Sonnet fallback for quality."
+
+  math:
+    primary: "openai"
+    fallback: "glm5"
+    notes: "GPT-5.4 math-optimized. GLM-5 fallback if GPT unavailable."
+
+  general:
+    primary: "glm5"
+    fallback: "anthropic"
+    notes: "GLM-5 default for all general queries."
+
+# ---------------------------------------------------------------------------
+# Budget Controls
+# ---------------------------------------------------------------------------
+
+budget:
+  monthly_cap_usd: 100.00
+  alert_at_pct:
+    - 80    # Alert at $80 — warning
+    - 100   # Alert at $100 — hard cutoff
+  alert_channel: "discord"     # Discord notification on threshold breach
+  cutoff_action: "local_only"  # On hard cutoff: route all requests to local models only
+  reset_day: 1                 # Budget resets on the 1st of each month
+
+# ---------------------------------------------------------------------------
+# Logging & Tracking
+# ---------------------------------------------------------------------------
+
+usage_log: "data/api_usage.jsonl"    # Per-request cost log
+usage_log_fields:
+  - "timestamp"
+  - "provider"
+  - "model"
+  - "task_type"
+  - "tokens_in"
+  - "tokens_out"
+  - "cost_usd"
+  - "agent_role"
+  - "latency_ms"
+  - "success"
+
+# ---------------------------------------------------------------------------
+# Privacy Policy
+# ---------------------------------------------------------------------------
+# CRITICAL: Never send fund-proprietary data to external APIs.
+# Blocked fields (must be stripped before any API call):
+#   - wallet addresses
+#   - open positions (size, direction, entry price)
+#   - PnL figures
+#   - trade logs
+#   - API keys / credentials
+# Enforcement: APIEscalation.call() must run privacy_scrub() before sending.
+
+privacy:
+  scrub_patterns:
+    - "0x[0-9a-fA-F]{40}"          # Wallet addresses
+    - "POLYMARKET_.*"               # Env var names that could leak creds
+    - "pnl|profit|loss|position"    # Financial state keywords (log warning)
+  log_scrub_events: true

@@ -1,0 +1,145 @@
+# Inference Tier Configuration — M5 Max LLM Stack
+# Single source of truth for all model configuration.
+# No hardcoded values — all engine selection, VRAM limits, and agent mappings live here.
+# Hot-reloadable: InferenceRouter.reload_config() re-reads this file at runtime.
+#
+# VRAM math (2026-03-19):
+#   flagship  70.0 GB
+#   reasoning 20.0 GB
+#   fast       7.0 GB
+#   embedding  0.3 GB
+#   TOTAL     97.3 GB  /  118.0 GB usable  (82.5% — 20.7 GB headroom)
+#
+# Hardware: Apple M5 Max, 128 GB unified memory
+# OS overhead: 10 GB reserved  →  118 GB usable
+
+vram_limit_gb: 118          # Hard ceiling — ModelManager rejects loads that would breach this
+health_check_interval_s: 300  # Check all model health every 5 minutes
+
+# ---------------------------------------------------------------------------
+# Model Tiers
+# ---------------------------------------------------------------------------
+# Each tier defines a single loaded model.
+# engine: mlx  — primary (Apple Silicon, ~2x faster than Ollama)
+# engine: ollama — fallback or embedding (HTTP to localhost:11434)
+# quantization: Q4_K_M — default for all local models (good quality/VRAM tradeoff)
+# ---------------------------------------------------------------------------
+
+tiers:
+  flagship:
+    name: "Qwen3.5-122B-A10B"
+    hf_repo: "mlx-community/Qwen3.5-122B-A10B-4bit"   # mlx-community quantized repo
+    engine: "mlx"
+    quantization: "Q4_K_M"
+    max_vram_gb: 70
+    max_tokens: 8192
+    temperature: 0.7
+    agents:
+      - "research"    # Mustang — alpha generation, backtesting, model training
+      - "risk"        # Dancer — independent oversight, kill authority
+      - "qa"          # Pax — post-deploy validation, auditing
+    description: "Flagship model for complex reasoning, signal analysis, and risk assessment"
+
+  reasoning:
+    name: "DeepSeek-R1-Distill-Qwen-32B"
+    hf_repo: "mlx-community/DeepSeek-R1-Distill-Qwen-32B-4bit"
+    engine: "mlx"
+    quantization: "Q4_K_M"
+    max_vram_gb: 20
+    max_tokens: 8192
+    temperature: 0.6
+    agents:
+      - "execution"   # Tactus — trade placement, fill quality, order routing
+    description: "Reasoning-optimized model for execution logic, sizing math, and order analysis"
+
+  fast:
+    name: "Qwen3.5-9B"
+    hf_repo: "mlx-community/Qwen3.5-9B-4bit"
+    engine: "mlx"
+    quantization: "Q4_K_M"
+    max_vram_gb: 7
+    max_tokens: 4096
+    temperature: 0.5
+    agents:
+      - "ops"         # Ragnar — settlements, pipelines, strategy control
+      - "infra"       # Holiday — deploy, health checks, EC2 management
+      - "data"        # Victra — ground truth PnL, data sourcing, reconciliation
+    description: "Fast model for operational tasks — latency-sensitive, high-frequency queries"
+
+  embedding:
+    name: "nomic-embed-text"
+    hf_repo: "nomic-ai/nomic-embed-text-v1.5"
+    engine: "ollama"          # Ollama serves nomic-embed-text natively
+    quantization: null        # Embeddings run at full precision
+    max_vram_gb: 0.3
+    dimensions: 768
+    agents: []                # Not assigned to agents directly — used by RAG pipeline
+    description: "Embedding model for vector search (ChromaDB + hybrid RAG)"
+
+# ---------------------------------------------------------------------------
+# Fallback Chain
+# ---------------------------------------------------------------------------
+# Router walks this list when the preferred tier is down or overloaded.
+# "api" is the API escalation layer (see config/api_providers.yaml).
+# ---------------------------------------------------------------------------
+
+fallback_chain:
+  - "flagship"
+  - "reasoning"
+  - "fast"
+  - "api"
+
+# ---------------------------------------------------------------------------
+# Agent → Tier Mapping (derived from tiers above, explicit for clarity)
+# ---------------------------------------------------------------------------
+# Used by InferenceRouter.get_model_for_role() as a fast lookup.
+# Must stay in sync with the agents lists in each tier above.
+# ---------------------------------------------------------------------------
+
+agent_tier_map:
+  research:  "flagship"
+  risk:      "flagship"
+  qa:        "flagship"
+  execution: "reasoning"
+  ops:       "fast"
+  infra:     "fast"
+  data:      "fast"
+
+# ---------------------------------------------------------------------------
+# Escalation Tags
+# ---------------------------------------------------------------------------
+# Agents can request escalation by setting escalate= in the infer() call.
+# escalate: "flagship"    — force flagship tier regardless of agent role
+# escalate: "api"         — force API escalation (bypasses local entirely)
+# ---------------------------------------------------------------------------
+
+escalation_tags:
+  - "flagship"
+  - "reasoning"
+  - "fast"
+  - "api"
+
+# ---------------------------------------------------------------------------
+# Health Check Config
+# ---------------------------------------------------------------------------
+# Each model is probed with a minimal prompt.
+# If no response within timeout_s, model is marked unhealthy.
+# ---------------------------------------------------------------------------
+
+health_check:
+  test_prompt: "Respond with OK."
+  timeout_s: 10
+  max_retries: 2
+  restart_on_failure: true
+
+# ---------------------------------------------------------------------------
+# Model Download Commands (for reference — used by scripts/setup_m5_remote.sh)
+# ---------------------------------------------------------------------------
+# mlx_lm.convert is not needed — mlx-community repos are pre-quantized.
+# Run these on the M5 Max to pull models to HuggingFace cache.
+# ---------------------------------------------------------------------------
+
+# huggingface-cli download mlx-community/Qwen3.5-122B-A10B-4bit
+# huggingface-cli download mlx-community/DeepSeek-R1-Distill-Qwen-32B-4bit
+# huggingface-cli download mlx-community/Qwen3.5-9B-4bit
+# ollama pull nomic-embed-text

@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.secret
+
+# Data (never commit live data, models, or trade logs)
+data/
+models/
+historical_trades/
+memory/
+*.jsonl
+*.parquet
+*.csv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Node
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# ChromaDB
+chroma/
+
+# Logs
+*.log
+logs/
+
+# Research artifacts (not for public repo)
+research/
+.spec-workflow/
+.serena/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/

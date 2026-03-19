@@ -6,8 +6,8 @@ Fallback: text-embedding-3-small via OpenAI ($0.02/M tokens)
 
 from __future__ import annotations
 
-import os
 import logging
+import os
 
 import requests
 

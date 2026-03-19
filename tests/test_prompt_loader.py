@@ -14,7 +14,6 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
@@ -24,7 +23,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from core.prompts.loader import PromptLoader, PromptTemplate, get_loader
-
 
 # ─── Fixtures ─────────────────────────────────────────────────────────────────
 

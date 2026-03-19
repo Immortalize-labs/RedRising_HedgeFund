@@ -21,7 +21,7 @@ import json
 import logging
 from typing import Any, Callable, Sequence
 
-from agents.memory import AgentLogger, AgentMemory, RunArtifacts
+from agents.memory import AgentLogger, AgentMemory
 from core.llm.client import call as llm_call
 
 logger = logging.getLogger(__name__)

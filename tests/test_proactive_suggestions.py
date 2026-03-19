@@ -17,8 +17,6 @@ import json
 import time
 from pathlib import Path
 
-import pytest
-
 from core.risk.proactive_suggestions import (
     CRITICAL,
     INFO,
@@ -27,7 +25,6 @@ from core.risk.proactive_suggestions import (
     Suggestion,
     state_checker,
 )
-
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 

@@ -21,13 +21,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Callable
 
-from orchestrator.state import StrategyState, new_state
 from orchestrator.gates import (
-    research_gate,
     backtest_gate,
     deployment_gate,
     monitor_check,
+    research_gate,
 )
+from orchestrator.state import StrategyState
 
 logger = logging.getLogger(__name__)
 

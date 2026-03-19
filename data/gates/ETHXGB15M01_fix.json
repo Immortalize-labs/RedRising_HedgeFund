@@ -1,0 +1,8 @@
+{
+  "type": "fix",
+  "strategy_id": "ETHXGB15M01",
+  "description": "ETH-15m fix gate: LOOKBACK_BARS 500->2000, unified feature_builder.py",
+  "approved_at": "2026-03-17T18:00:00Z",
+  "backtest_before": {"wr": 44.0, "pnl": -12.5, "n": 50},
+  "backtest_after":  {"wr": 60.7, "pnl": 39.63, "n": 28}
+}

@@ -1,0 +1,174 @@
+# RedRising HedgeFund — Strategy Registry
+# Single source of truth for all strategy configuration.
+
+wallets:
+  W1:
+    env_var: POLYMARKET_FUNDER_ADDRESS
+    fallback: "0x0000000000000000000000000000000000000001"
+
+strategies:
+  # ── Active Strategies ──────────────────────────────────────────────────────
+
+  BTCXGB15M01:
+    display_name: btc-15m
+    asset: BTC
+    model: XGB
+    timeframe: 15m
+    version: 1
+    status: active
+    wallet: W1
+    slug_prefix: btc-updown-15m
+    window_seconds: 900
+    trade_dir: data/live_trading_btc_15m
+    settlement_file: data/live_trading_btc_15m/settlements.json
+    trades_file: data/live_trading_btc_15m/trades.jsonl
+    log_file: data/live_trader_btc_15m.log
+    systemd_trader: polymarket-btc-15m-trader
+    systemd_settlement: btc-15m-settlement
+    trader_script: scripts/live_trader_btc_15m.py
+
+  ETHXGB15M01:
+    display_name: eth-15m
+    asset: ETH
+    model: XGB
+    timeframe: 15m
+    version: 1
+    status: active
+    wallet: W1
+    slug_prefix: eth-updown-15m
+    window_seconds: 900
+    trade_dir: data/live_trading_eth_15m
+    settlement_file: data/live_trading_eth_15m/settlements.json
+    trades_file: data/live_trading_eth_15m/trades.jsonl
+    log_file: data/live_trader_eth_15m.log
+    systemd_trader: polymarket-eth-15m-trader
+    systemd_settlement: eth-15m-settlement
+    trader_script: scripts/live_trader_eth_15m.py
+
+  XRPXGB15M01:
+    display_name: xrp-15m
+    asset: XRP
+    model: XGB
+    timeframe: 15m
+    version: 1
+    status: active
+    wallet: W1
+    slug_prefix: xrp-updown-15m
+    window_seconds: 900
+    trade_dir: data/live_trading_xrp_15m
+    settlement_file: data/live_trading_xrp_15m/settlements.json
+    trades_file: data/live_trading_xrp_15m/trades.jsonl
+    log_file: data/live_trader_xrp_15m.log
+    systemd_trader: polymarket-xrp-15m-trader
+    systemd_settlement: xrp-15m-settlement
+    trader_script: scripts/live_trader_xrp_15m.py
+
+  # ── Killed Strategies ─────────────────────────────────────────────────────
+
+  ETHXGB05M01:
+    display_name: eth-5m
+    asset: ETH
+    model: XGB
+    timeframe: 5m
+    version: 1
+    status: killed
+    wallet: W1
+    slug_prefix: eth-updown-5m
+    window_seconds: 300
+    trade_dir: data/live_trading_eth_v2
+    settlement_file: data/live_trading_eth_v2/settlements.json
+    trades_file: data/live_trading_eth_v2/trades.jsonl
+    log_file: data/live_trader_eth.log
+    systemd_trader: polymarket-eth-trader
+    systemd_settlement: eth-xgb-settlement
+    trader_script: scripts/live_trader_eth.py
+
+  BTCXGB05M01:
+    display_name: btc-5m
+    asset: BTC
+    model: XGB
+    timeframe: 5m
+    version: 1
+    status: killed
+    wallet: W1
+    slug_prefix: btc-updown-5m
+    window_seconds: 300
+    trade_dir: data/live_trading_v2
+    settlement_file: data/live_trading_v2/settlements.json
+    trades_file: data/live_trading_v2/trades.jsonl
+    log_file: data/live_trader.log
+    systemd_trader: polymarket-trader
+    systemd_settlement: xgb-settlement
+    trader_script: scripts/live_trader_v2.py
+
+  XRPXGB05M01:
+    display_name: xrp-5m
+    asset: XRP
+    model: XGB
+    timeframe: 5m
+    version: 1
+    status: killed
+    wallet: W1
+    slug_prefix: xrp-updown-5m
+    window_seconds: 300
+    trade_dir: data/live_trading_xrp
+    settlement_file: data/live_trading_xrp/settlements.json
+    trades_file: data/live_trading_xrp/trades.jsonl
+    log_file: data/live_trader_xrp.log
+    systemd_trader: polymarket-xrp-trader
+    systemd_settlement: xrp-xgb-settlement
+    trader_script: scripts/live_trader_xrp.py
+
+  MOMV1:
+    display_name: momentum
+    asset: BTC
+    model: Momentum
+    timeframe: 5m
+    version: 1
+    status: killed
+    wallet: W1
+    slug_prefix: btc-updown-5m
+    window_seconds: 300
+    trade_dir: data/live_trading_momentum
+    settlement_file: data/live_trading_momentum/settlements.json
+    trades_file: data/live_trading_momentum/trades.jsonl
+    log_file: data/live_trader_momentum.log
+    systemd_trader: polymarket-momentum-trader
+    systemd_settlement: mom-settlement
+    trader_script: scripts/live_trader_v2.py
+
+  ETHXGB05M02:
+    display_name: eth-5m-w2
+    asset: ETH
+    model: XGB
+    timeframe: 5m
+    version: 2
+    status: killed
+    wallet: W1
+    slug_prefix: eth-updown-5m
+    window_seconds: 300
+    trade_dir: data/live_trading_eth
+    settlement_file: data/live_trading_eth/settlements.json
+    trades_file: data/live_trading_eth/trades.jsonl
+    log_file: data/live_trader_eth_v1.log
+    systemd_trader: polymarket-eth-v1-trader
+    systemd_settlement: eth-v1-settlement
+    trader_script: scripts/live_trader_eth.py
+
+  QKELLY01:
+    display_name: qkelly
+    asset: BTC
+    model: QKelly
+    timeframe: 5m
+    version: 1
+    status: killed
+    wallet: W1
+    slug_prefix: btc-updown-5m
+    window_seconds: 300
+    trade_dir: data/live_trading_qkelly
+    settlement_file: data/live_trading_qkelly/settlements.json
+    trades_file: data/live_trading_qkelly/trades.jsonl
+    log_file: data/live_trader_qkelly.log
+    systemd_trader: polymarket-qkelly-trader
+    systemd_settlement: qkelly-settlement
+    trader_script: scripts/live_trader_v2.py

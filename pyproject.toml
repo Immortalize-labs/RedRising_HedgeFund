@@ -1,0 +1,12 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = [
+    "E501",   # Line length handled by formatter
+    "E741",   # Ambiguous variable names (pre-existing in tests/memory)
+    "E402",   # Module import not at top — required pattern for sys.path tests
+    "F841",   # Local variable assigned but never used (pre-existing in client.py)
+]

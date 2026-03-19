@@ -1,10 +1,11 @@
 # RedRising HedgeFund
 
+[![CI](https://github.com/Immortalize-labs/RedRising_HedgeFund/actions/workflows/ci.yml/badge.svg)](https://github.com/Immortalize-labs/RedRising_HedgeFund/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **An AI-native hedge fund framework where autonomous agents research, trade, and manage risk — organized as a Red Rising-inspired hierarchy.**
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/yourusername/RedRising_HedgeFund/pulls)
 
 > 用数字说话 — Let the numbers speak.
 

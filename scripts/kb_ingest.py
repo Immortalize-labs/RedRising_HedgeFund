@@ -42,7 +42,7 @@ def cmd_list(args):
         print("Knowledge base is empty.")
         return
     print(f"Total chunks: {s['total_chunks']}")
-    print(f"\nBy type:")
+    print("\nBy type:")
     for t, count in sorted(s["by_type"].items()):
         print(f"  {t}: {count}")
     print(f"\nSources ({len(s['sources'])}):")

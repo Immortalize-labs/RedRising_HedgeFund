@@ -1,0 +1,25 @@
+agent:
+  id: live_trader
+  type: trader
+  display_name: Live Trader Pool
+  codename: Live Traders
+  description: >
+    Manages the pool of live trading instances across all active strategies.
+    Runs one cycle every 300 seconds per instance.
+  model_key: minimax
+  tool_categories:
+    - clob_api
+    - gamma_api
+    - risk_gate
+  schedule_s: 300
+  dependencies:
+    - ares
+  config:
+    active_instances:
+      - btc-15m
+      - eth-15m
+      - xrp-15m
+      - sol-15m
+      - bnb-15m
+      - doge-15m
+      - hype-15m

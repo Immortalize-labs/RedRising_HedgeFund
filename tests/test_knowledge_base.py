@@ -9,8 +9,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from knowledge_base.chunker import Chunk, chunk_text, _tok_len
-
+from knowledge_base.chunker import Chunk, _tok_len, chunk_text
 
 # ─── Chunker ────────────────────────────────────────────────────────
 

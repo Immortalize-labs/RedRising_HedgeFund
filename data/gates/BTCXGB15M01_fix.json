@@ -1,0 +1,8 @@
+{
+  "type": "fix",
+  "strategy_id": "BTCXGB15M01",
+  "description": "BTC-15m fix gate: prob drift fix applied",
+  "approved_at": "2026-03-17T18:00:00Z",
+  "backtest_before": {"wr": 50.5, "pnl": 5.0, "n": 60},
+  "backtest_after":  {"wr": 58.1, "pnl": 45.20, "n": 35}
+}

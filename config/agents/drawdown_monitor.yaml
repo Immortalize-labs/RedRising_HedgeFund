@@ -1,0 +1,15 @@
+agent:
+  id: drawdown_monitor
+  type: monitor
+  display_name: Drawdown Monitor
+  codename: Ares-DD
+  description: >
+    Monitors portfolio and per-strategy drawdown in real time.
+    Surfaces warnings before hard risk limits are breached.
+    Escalates to Discord when drawdown exceeds policy thresholds.
+  model_key: haiku
+  tool_categories:
+    - notify
+  schedule_s: 60
+  dependencies:
+    - ares

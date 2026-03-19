@@ -1,13 +1,7 @@
 """Unit tests for core.risk.guardian.RiskGuardian."""
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
-import pytest
-
-from core.risk.guardian import RiskGuardian, RiskLimits, RiskState
-
+from core.risk.guardian import RiskGuardian, RiskLimits
 
 # ── Basic check_trade gates ────────────────────────────────────────────────
 

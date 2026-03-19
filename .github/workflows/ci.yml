@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install ruff
+      - name: Lint
+        run: ruff check .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret scan
+        run: |
+          # Check for hardcoded secrets
+          ! grep -rn "0x[a-fA-F0-9]{40}" --include="*.py" --include="*.yaml" --include="*.sh" . || echo "WARNING: Possible wallet address found"
+          ! grep -rn "sk-[a-zA-Z0-9]" --include="*.py" --include="*.yaml" . || echo "WARNING: Possible API key found"

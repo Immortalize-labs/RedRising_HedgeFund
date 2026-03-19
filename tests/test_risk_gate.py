@@ -1,11 +1,6 @@
 """Tests for core/risk/gate.py — RiskGate wrapping RiskGuardian."""
 from __future__ import annotations
 
-import tempfile
-from pathlib import Path
-
-import pytest
-
 from core.risk.gate import RiskGate, Verdict
 from core.risk.guardian import RiskGuardian
 

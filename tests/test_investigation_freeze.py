@@ -16,10 +16,7 @@ import json
 import time
 from pathlib import Path
 
-import pytest
-
 from core.risk.investigation_freeze import FreezeManager, FreezeRecord
-
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 

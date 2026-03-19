@@ -1,0 +1,8 @@
+{
+  "type": "fix",
+  "strategy_id": "XRPXGB15M01",
+  "description": "XRP-15m fix gate: prob drift fix applied",
+  "approved_at": "2026-03-17T18:00:00Z",
+  "backtest_before": {"wr": 54.0, "pnl": 12.0, "n": 45},
+  "backtest_after":  {"wr": 69.2, "pnl": 62.80, "n": 30}
+}

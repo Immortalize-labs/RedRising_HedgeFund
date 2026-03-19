@@ -14,15 +14,11 @@ Acceptance criteria:
 from __future__ import annotations
 
 import logging
-import time
 import types
-from unittest.mock import MagicMock, patch, call
-
-import pytest
+from unittest.mock import MagicMock, patch
 
 import core.monitor.cycle as cycle_module
 from core.monitor.cycle import CycleMonitor
-
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -238,7 +234,7 @@ class TestGuardianNone:
 
 class TestCriticalAlert:
     def test_critical_suggestion_logs_at_error_level(self, caplog):
-        from core.risk.proactive_suggestions import Suggestion, CRITICAL
+        from core.risk.proactive_suggestions import CRITICAL, Suggestion
 
         monitor = _make_monitor()
         _attach_guardian(monitor)
@@ -261,7 +257,7 @@ class TestCriticalAlert:
         assert any("[ALERT]" in r.message for r in error_records)
 
     def test_critical_message_contains_trigger(self, caplog):
-        from core.risk.proactive_suggestions import Suggestion, CRITICAL
+        from core.risk.proactive_suggestions import CRITICAL, Suggestion
 
         monitor = _make_monitor()
         _attach_guardian(monitor)
@@ -288,7 +284,7 @@ class TestCriticalAlert:
 
 class TestWarningAlert:
     def test_warning_suggestion_logs_at_warning_level(self, caplog):
-        from core.risk.proactive_suggestions import Suggestion, WARNING
+        from core.risk.proactive_suggestions import WARNING, Suggestion
 
         monitor = _make_monitor()
         _attach_guardian(monitor)
@@ -316,7 +312,7 @@ class TestWarningAlert:
 
 class TestInfoAlert:
     def test_info_suggestion_logs_at_info_level(self, caplog):
-        from core.risk.proactive_suggestions import Suggestion, INFO
+        from core.risk.proactive_suggestions import INFO, Suggestion
 
         monitor = _make_monitor()
         _attach_guardian(monitor)

@@ -11,8 +11,8 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from orchestrator.pipeline import PromotionPipeline
 from orchestrator.state import new_state
-from orchestrator.pipeline import PromotionPipeline, GateResult, STAGES
 
 
 class TestPipelineGates:

@@ -12,7 +12,6 @@ Usage:
     echo "long prompt" | python scripts/ask_model.py -m gpt --stdin
 """
 import argparse
-import json
 import os
 import sys
 from pathlib import Path

@@ -152,8 +152,8 @@ def _read_pdf_legacy(path: Path) -> str:
 def _read_epub(path: Path) -> str:
     """Extract plain text from an EPUB file via ebooklib + BeautifulSoup."""
     import ebooklib
-    from ebooklib import epub
     from bs4 import BeautifulSoup
+    from ebooklib import epub
 
     book = epub.read_epub(str(path), options={"ignore_ncx": True})
     parts: list[str] = []

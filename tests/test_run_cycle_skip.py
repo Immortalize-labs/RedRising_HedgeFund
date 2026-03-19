@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
-import time
+
 from core.monitor.cycle import CycleMonitor
+
 
 class DummySignal:
     prediction = "UP"
@@ -46,14 +47,14 @@ def test_run_cycle_skip_trade():
         price_field="btc_price",
         min_confidence_prob=0.52,
     )
-    
+
     # We must ensure the cycle check actually runs
     # current_epoch > last_traded_epoch
     monitor.last_traded_epoch = 0
 
     with patch('core.monitor.cycle.time.time') as mock_time, \
          patch('core.monitor.cycle.find_market') as mock_find_market:
-        
+
         mock_time.return_value = 300  # Epoch 300 > 0
         mock_find_market.return_value = {"remaining_sec": 100, "yes_price": 0.5}
 

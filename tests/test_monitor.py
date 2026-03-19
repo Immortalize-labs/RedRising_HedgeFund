@@ -1,8 +1,6 @@
 """Tests for core/monitor/cycle.py — CycleMonitor and find_market."""
 from __future__ import annotations
 
-import pytest
-
 from core.monitor.cycle import CycleMonitor
 
 

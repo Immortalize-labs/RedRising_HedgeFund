@@ -1,15 +1,11 @@
 """Tests for the Agent Supervisor framework."""
 
-import json
-import tempfile
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
 
 from agents.incident_log import IncidentLog
-
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 

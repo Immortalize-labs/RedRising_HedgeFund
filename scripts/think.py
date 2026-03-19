@@ -17,8 +17,7 @@ Usage:
 import argparse
 import json
 import os
-import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 EST = timezone(timedelta(hours=-5))
 LOG_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "think_log.jsonl")

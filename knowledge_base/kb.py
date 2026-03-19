@@ -5,7 +5,6 @@ Core operations: query, format_for_prompt, ingest_chunks, stats, delete_doc.
 
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
 

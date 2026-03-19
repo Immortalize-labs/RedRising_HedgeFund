@@ -3,8 +3,6 @@ Tests for core.llm.client — Unified Async LLM Client
 =====================================================
 Tests the new async client that replaces subprocess-based ask_model.py.
 """
-import asyncio
-import json
 import os
 import sys
 from pathlib import Path
@@ -17,13 +15,11 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from core.llm.client import (
+    MODELS,
     LLMClient,
     LLMResult,
-    ModelConfig,
-    MODELS,
     call,
     call_with_meta,
-    get_client,
 )
 
 

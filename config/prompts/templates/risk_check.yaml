@@ -1,0 +1,99 @@
+name: risk_check
+version: "1.0"
+model: haiku
+temperature: 0.0
+max_tokens: 256
+system: >
+  You are an independent risk manager. Your mandate is to enforce hard risk limits
+  on every proposed trade. Approve, reject, or reduce position size based on
+  portfolio exposure, drawdown, and daily loss limits. Never lower the bar.
+  Respond ONLY with a JSON object.
+
+prompt_template: |
+  Trade proposal:
+  - Symbol: {symbol}
+  - Direction: {direction}
+  - Proposed size: ${proposed_size}
+  - Confidence: {confidence}
+
+  Portfolio state:
+  - Total exposure: ${total_exposure}
+  - Open positions: {open_positions}
+  - Today PnL: {today_pnl}
+  - Today loss: ${today_loss}
+  - Drawdown: {drawdown_pct}%
+  - Last 10 outcomes: {last_10_outcomes}
+  - WR last 10: {wr_last_10}%
+  - Correlation: {correlation}
+
+  Check against risk policy and decide. Respond with JSON only.
+
+output_schema:
+  type: object
+  required:
+    - decision
+    - risk_score
+    - violations
+    - adjusted_size_usd
+  properties:
+    decision:
+      type: string
+      enum: ["APPROVE", "REJECT", "REDUCE"]
+    risk_score:
+      type: number
+      minimum: 0.0
+      maximum: 1.0
+      description: "0 = no risk, 1 = maximum risk"
+    violations:
+      type: array
+      items:
+        type: string
+    adjusted_size_usd:
+      type: number
+      minimum: 0
+
+examples:
+  - input:
+      symbol: BTC
+      direction: LONG
+      proposed_size: "300"
+      confidence: "0.68"
+      total_exposure: "0.00"
+      open_positions: "none"
+      today_pnl: "+5.20"
+      today_loss: "0.00"
+      drawdown_pct: "0.00"
+      last_10_outcomes: "W W L W W L W W L W"
+      wr_last_10: "70.0"
+      correlation: "none"
+    output: '{"decision": "APPROVE", "risk_score": 0.15, "violations": [], "adjusted_size_usd": 300}'
+
+  - input:
+      symbol: ETH
+      direction: LONG
+      proposed_size: "500"
+      confidence: "0.55"
+      total_exposure: "1800.00"
+      open_positions: "BTC LONG $900, XRP LONG $900"
+      today_pnl: "-40.00"
+      today_loss: "40.00"
+      drawdown_pct: "1.80"
+      last_10_outcomes: "L L L W L L W L L W"
+      wr_last_10: "30.0"
+      correlation: "0.85 with BTC position"
+    output: '{"decision": "REJECT", "risk_score": 0.92, "violations": ["exposure_limit", "daily_loss_approaching", "adverse_selection", "high_correlation"], "adjusted_size_usd": 0}'
+
+  - input:
+      symbol: XRP
+      direction: SHORT
+      proposed_size: "400"
+      confidence: "0.61"
+      total_exposure: "300.00"
+      open_positions: "BTC LONG $300"
+      today_pnl: "+2.10"
+      today_loss: "0.00"
+      drawdown_pct: "0.20"
+      last_10_outcomes: "W L W W L W W L W W"
+      wr_last_10: "70.0"
+      correlation: "low"
+    output: '{"decision": "REDUCE", "risk_score": 0.45, "violations": ["exposure_limit_approaching"], "adjusted_size_usd": 200}'

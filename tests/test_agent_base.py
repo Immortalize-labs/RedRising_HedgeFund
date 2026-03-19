@@ -3,10 +3,8 @@ Tests for agents/base.py + agents/memory.py
 ============================================
 Validates the pure-async agent node system (no LangGraph).
 """
-import asyncio
 import json
 import sys
-import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -15,8 +13,8 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from agents.memory import AgentMemory, AgentLogger, RunArtifacts
 from agents.base import Tool, create_agent_node, create_tool_node
+from agents.memory import AgentLogger, AgentMemory, RunArtifacts
 
 
 class TestAgentMemory:

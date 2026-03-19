@@ -17,9 +17,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from memory.store import GlobalMemory
+
 from agents.hf.characters import team_summary
 from orchestrator.debate import DebateEngine, DebateResult
-from memory.store import GlobalMemory
 
 
 def save_result(result: DebateResult, output_path: Path) -> None:

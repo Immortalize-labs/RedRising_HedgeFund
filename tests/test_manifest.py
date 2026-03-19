@@ -2,7 +2,6 @@
 Tests for agents/manifest.py
 """
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -10,8 +9,7 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from agents.manifest import load_manifest, ManifestRegistry, AgentManifest
-
+from agents.manifest import ManifestRegistry, load_manifest
 
 MANIFEST_DIR = ROOT / "config" / "agents"
 

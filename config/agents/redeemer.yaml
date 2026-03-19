@@ -1,0 +1,14 @@
+agent:
+  id: redeemer
+  type: deterministic
+  display_name: Settlement Redeemer
+  codename: Ragnar
+  description: >
+    Polls resolved Polymarket markets and redeems winning CTF positions.
+    Runs gaslessly via the Builder Relayer. No LLM calls — pure deterministic.
+  model_key: haiku
+  tool_categories:
+    - polymarket_relayer
+    - blockchain
+  schedule_s: 300
+  dependencies: []

@@ -1,0 +1,90 @@
+name: trade_decision
+version: "1.0"
+model: deepseek
+temperature: 0.0
+max_tokens: 256
+system: >
+  You are a quantitative portfolio trader. Given market signals and current
+  portfolio state, decide whether to enter a trade, which direction, and
+  the appropriate size. You must stay within risk policy limits at all times.
+  Respond ONLY with a JSON object.
+
+prompt_template: |
+  Symbol: {symbol}
+  Timeframe: {timeframe}
+  Current price: {price}
+  Timestamp: {timestamp}
+
+  Signals:
+  {signals_block}
+
+  Portfolio state:
+  - Current exposure: ${current_exposure}
+  - Open positions: {open_positions}
+  - Today PnL: {today_pnl}
+  - Last 5 outcomes: {last_5_outcomes}
+  - Rolling WR: {rolling_wr}%
+
+  Decide whether to trade. Respond with JSON only.
+
+output_schema:
+  type: object
+  required:
+    - direction
+    - confidence
+    - size_usd
+    - reasoning
+  properties:
+    direction:
+      type: string
+      enum: ["LONG", "SHORT", "FLAT"]
+    confidence:
+      type: number
+      minimum: 0.0
+      maximum: 1.0
+    size_usd:
+      type: number
+      minimum: 0
+      maximum: 500
+    reasoning:
+      type: string
+
+examples:
+  - input:
+      symbol: BTC
+      timeframe: 15m
+      price: "84250"
+      timestamp: "2026-03-19 06:00 EST"
+      signals_block: "XGB prediction: LONG\nXGB probability: 0.6800\nConfidence: 0.1800"
+      current_exposure: "0.00"
+      open_positions: "none"
+      today_pnl: "+0.00"
+      last_5_outcomes: "W L W W L"
+      rolling_wr: "55.0"
+    output: '{"direction": "LONG", "confidence": 0.68, "size_usd": 300, "reasoning": "XGB signals strong LONG at 68% probability. No open exposure. Entry warranted."}'
+
+  - input:
+      symbol: ETH
+      timeframe: 15m
+      price: "3180"
+      timestamp: "2026-03-19 07:00 EST"
+      signals_block: "XGB prediction: SHORT\nXGB probability: 0.7100\nConfidence: 0.2100"
+      current_exposure: "200.00"
+      open_positions: "ETH-15m LONG $200"
+      today_pnl: "+8.40"
+      last_5_outcomes: "W W W L W"
+      rolling_wr: "60.0"
+    output: '{"direction": "FLAT", "confidence": 0.71, "size_usd": 0, "reasoning": "Signal disagrees with open position. Alignment mismatch — no new entry until position resolved."}'
+
+  - input:
+      symbol: XRP
+      timeframe: 15m
+      price: "0.5420"
+      timestamp: "2026-03-19 08:00 EST"
+      signals_block: "XGB prediction: SHORT\nXGB probability: 0.5900\nConfidence: 0.0900"
+      current_exposure: "0.00"
+      open_positions: "none"
+      today_pnl: "-5.20"
+      last_5_outcomes: "L L W L W"
+      rolling_wr: "40.0"
+    output: '{"direction": "SHORT", "confidence": 0.59, "size_usd": 150, "reasoning": "Marginal SHORT signal. Reduced size due to negative daily PnL and below-backtest WR."}'

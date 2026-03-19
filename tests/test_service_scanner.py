@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -18,18 +18,17 @@ sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 import service_scanner as ss
 from service_scanner import (
-    ServiceInfo,
+    INFRA_SERVICES,
     RogueService,
-    _parse_systemctl_output,
+    ServiceInfo,
     _matches_detection_pattern,
+    _parse_systemctl_output,
+    auto_kill_rogues,
     build_authorized_set,
+    format_report,
     scan,
     stop_service,
-    auto_kill_rogues,
-    format_report,
-    INFRA_SERVICES,
 )
-
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 

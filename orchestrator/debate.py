@@ -12,24 +12,18 @@ No LangGraph. Uses engine.llm for model calls, concurrent.futures for parallelis
 """
 from __future__ import annotations
 
-import json
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Any
 
 from agents.hf.characters import (
     PORTFOLIO_MANAGER,
     RISK_MANAGER,
-    Character,
-    Role,
     Round,
-    get_character,
     get_researchers,
 )
-from core.llm.client import call as llm_call, call_with_meta as llm_call_with_meta
+from core.llm.client import call as llm_call
 
 
 @dataclass
@@ -84,11 +78,11 @@ class DebateResult:
 
     def summary(self) -> str:
         lines = [
-            f"=== Debate Result ===",
+            "=== Debate Result ===",
             f"Strategy: {self.synthesis.decision}",
             f"Risk: {self.risk_review.decision}",
             f"Time: {self.total_elapsed_sec:.1f}s",
-            f"Models used:",
+            "Models used:",
         ]
         for p in self.proposals:
             lines.append(f"  R1 {p.role}: {p.model} ({p.elapsed_sec:.1f}s)")

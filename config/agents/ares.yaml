@@ -1,0 +1,97 @@
+agent:
+  id: ares
+  type: supervisor
+  display_name: QA Monitor
+  codename: Ares
+  description: >
+    Monitors live strategy health. Checks trade freshness, fill rates,
+    alignment, and service uptime. Escalates incidents and auto-restarts
+    services when authorized.
+  model_key: haiku
+  tool_categories:
+    - systemd
+    - notify
+
+  thresholds_file: config/thresholds/ares.yaml
+
+  checks:
+    - name: trade_freshness
+      module: agents.checks.freshness
+      function: check_trade_freshness
+      interval_s: 60
+      scope: per_strategy
+      description: "Check that the most recent trade is within expected window"
+
+    - name: fill_rate
+      module: agents.checks.fill_rate
+      function: check_fill_rate
+      interval_s: 300
+      scope: per_strategy
+      description: "Verify fill rate >= 80% over last 24 hours"
+
+    - name: alignment
+      module: agents.checks.alignment
+      function: check_alignment
+      interval_s: 60
+      scope: per_strategy
+      description: "Check AI signal matches open order direction"
+
+    - name: service_health
+      module: agents.checks.service_health
+      function: check_service_running
+      interval_s: 30
+      scope: per_strategy
+      description: "Verify the trader systemd service is active/running"
+
+    - name: signal_quality
+      module: agents.checks.signal_quality
+      function: check_signal_quality
+      interval_s: 300
+      scope: per_strategy
+      description: "Check live win rate has not dropped more than 5pp below backtest"
+
+    - name: settlement_lag
+      module: agents.checks.settlement_lag
+      function: check_settlement_lag
+      interval_s: 600
+      scope: per_strategy
+      description: "Check for unsettled positions older than 30 minutes"
+
+  actions:
+    - name: escalate_to_discord
+      module: agents.actions.notify
+      function: send_escalation
+      authority: escalate
+      trigger:
+        check: "*"
+        consecutive_failures: 2
+      cooldown_s: 300
+      max_per_day: 20
+      description: "Send alert to Discord when any check fails twice in a row"
+
+    - name: restart_trader_service
+      module: agents.actions.infra
+      function: restart_service
+      authority: auto
+      trigger:
+        check: service_health
+        consecutive_failures: 3
+      cooldown_s: 600
+      max_per_day: 5
+      dry_run_delay_s: 0
+      description: "Restart the trader systemd service after 3 consecutive health failures"
+
+    - name: escalate_rollback
+      module: agents.actions.deploy
+      function: trigger_rollback
+      authority: escalate
+      trigger:
+        check: signal_quality
+        consecutive_failures: 5
+      cooldown_s: 3600
+      max_per_day: 2
+      description: "Escalate rollback request when signal quality degrades severely"
+
+  escalation:
+    channel: discord
+    default_priority: warning

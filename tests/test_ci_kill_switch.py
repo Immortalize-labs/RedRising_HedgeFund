@@ -11,26 +11,21 @@ Validates:
 from __future__ import annotations
 
 import json
-import math
-import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
-
-import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
 from scripts.strategy_perf_monitor import (
-    wilson_ci,
-    load_baseline_wr,
-    MIN_TRADES_FOR_KILL,
     DEFAULT_BASELINE_WR,
     KILL_MARGIN_PP,
+    MIN_TRADES_FOR_KILL,
+    load_baseline_wr,
+    wilson_ci,
 )
-
 
 # ---------------------------------------------------------------------------
 # Wilson CI calculation tests

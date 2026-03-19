@@ -1,0 +1,14 @@
+agent:
+  id: debate_team
+  type: researcher
+  display_name: Research Debate Team
+  codename: The Howlers
+  description: >
+    Four-round adversarial research process.
+    Sevro (signals), Cassius (models), Tharax (regime), PM (synthesis), Risk (veto).
+  model_key: minimax
+  tool_categories:
+    - knowledge_base
+    - market_data
+    - backtester
+  dependencies: []

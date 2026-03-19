@@ -64,3 +64,8 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Allow gate files (static strategy reference data — not live trading data)
+!data/
+!data/gates/
+!data/gates/*.json

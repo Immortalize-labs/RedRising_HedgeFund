@@ -10,11 +10,9 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts.drawdown_monitor import (
-    BASELINE_DATE,
-    compute_strategy_metrics,
     check_limits,
+    compute_strategy_metrics,
 )
-
 
 # ── compute_strategy_metrics ───────────────────────────────────────────────
 

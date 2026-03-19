@@ -45,15 +45,14 @@ node_modules/
 package-lock.json
 npm-debug.log*
 
-# ChromaDB
-chroma/
+# ChromaDB (vector store data — regenerated on ingest)
+knowledge_base/chroma/
 
 # Logs
 *.log
 logs/
 
-# Research artifacts (not for public repo)
-research/
+# Spec workflow / Serena (local tooling)
 .spec-workflow/
 .serena/
 
